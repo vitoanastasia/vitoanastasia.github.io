@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VITO.SYS — Link Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=VT323&display=swap" rel="stylesheet">
+<script>document.documentElement.className = 'js';</script>
+<style>
+  :root{
+    --bg: #060a06;
+    --panel-bg: #0b120b;
+    --green: #33ff33;
+    --green-bright: #9dffb0;
+    --green-dim: #229922;
+    --green-dimmer: #123d12;
+    --amber: #ffb000;
+    --black: #010301;
+    --radius: 0;
+    --maxw: 700px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+  }
+
+  body{
+    padding: clamp(20px, 5vw, 56px) 16px 80px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline + vignette overlay */
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.18) 3px
+    );
+    z-index: 5;
+    mix-blend-mode: multiply;
+  }
+  body::after{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
+    z-index: 4;
+  }
+
+  ::selection{
+    background: var(--green);
+    color: var(--black);
+  }
+
+  a{ color: inherit; text-decoration: none; }
+
+  .terminal{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .boot-log{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--green-dim);
+    white-space: pre-wrap;
+    margin: 0 0 8px;
+    min-height: 1.6em;
+  }
+  .boot-log .cursor{
+    display:inline-block;
+    background: var(--green);
+    width: 8px;
+    height: 14px;
+    margin-left: 2px;
+    vertical-align: -2px;
+    animation: blink 1s steps(1) infinite;
+  }
+
+  .content{
+    animation: reveal 320ms ease-out;
+  }
+  /* Boot log is decorative and only shown once JS confirms it can animate it away.
+     Content is visible by default so the page works with JS disabled. */
+  .boot-log{ display: none; }
+  .js .boot-log{ display: block; }
+  .js .content{ display: none; }
+  .js .content.is-visible{ display: block; }
+
+  @keyframes reveal{
+    from{ opacity: 0; transform: translateY(4px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink{
+    0%, 49%{ opacity: 1; }
+    50%, 100%{ opacity: 0; }
+  }
+
+  /* ---- Header / banner ---- */
+  .banner{
+    border: 1px solid var(--green-dim);
+    padding: 18px 20px 20px;
+    margin-bottom: 22px;
+    background: var(--panel-bg);
+    box-shadow: 0 0 22px -6px rgba(51,255,51,0.25);
+  }
+
+  .path-line{
+    font-size: 12.5px;
+    color: var(--green-dim);
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .ascii-title{
+    font-family: 'VT323', monospace;
+    font-size: clamp(48px, 12vw, 76px);
+    font-weight: normal;
+    line-height: 0.9;
+    margin: 0;
+    color: var(--green-bright);
+    text-shadow: 0 0 10px rgba(51,255,51,0.55), 0 0 26px rgba(51,255,51,0.25);
+    letter-spacing: 2px;
+  }
+
+  .subtitle{
+    font-size: 13px;
+    color: var(--green-dim);
+    margin: 6px 0 0;
+  }
+
+  /* ---- Panels ---- */
+  .panel{
+    border: 1px solid var(--green-dim);
+    margin-bottom: 20px;
+    background: var(--panel-bg);
+  }
+
+  .panel-bar{
+    background: var(--green);
+    color: var(--black);
+    font-family: 'VT323', monospace;
+    font-size: 19px;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-bar h2{
+    margin: 0;
+    font: inherit;
+    color: inherit;
+  }
+
+  .panel-body{
+    padding: 18px 20px 20px;
+  }
+
+  .bio{
+    font-size: 14.5px;
+    line-height: 1.75;
+    margin: 0;
+    color: var(--green-bright);
+  }
+
+  .bio .field{
+    color: var(--green-dim);
+  }
+
+  .blink{
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  /* ---- Menu ---- */
+  .menu{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    border-top: 1px dashed var(--green-dimmer);
+    cursor: pointer;
+    transition: background-color 100ms ease, color 100ms ease;
+  }
+  .menu li:first-child .menu-item{ border-top: none; }
+
+  .menu-item:hover,
+  .menu-item:focus-visible{
+    background: var(--green);
+    color: var(--black);
+  }
+  .menu-item:focus-visible{
+    outline: 2px solid var(--green-bright);
+    outline-offset: -2px;
+  }
+
+  .menu-item:hover .icon svg,
+  .menu-item:focus-visible .icon svg{
+    stroke: var(--black);
+  }
+  .menu-item:hover .dots,
+  .menu-item:focus-visible .dots{
+    border-color: var(--black);
+  }
+  .menu-item:hover .handle,
+  .menu-item:hover .idx,
+  .menu-item:hover .key,
+  .menu-item:focus-visible .handle,
+  .menu-item:focus-visible .idx,
+  .menu-item:focus-visible .key{
+    color: var(--black);
+  }
+
+  .menu-item.is-static{
+    cursor: default;
+  }
+  .menu-item.is-static:hover,
+  .menu-item.is-static:focus-visible{
+    background: transparent;
+    color: var(--green);
+    outline: none;
+  }
+  .menu-item.is-static:hover .icon svg,
+  .menu-item.is-static:focus-visible .icon svg{
+    stroke: var(--green);
+  }
+  .menu-item.is-static:hover .dots,
+  .menu-item.is-static:focus-visible .dots{
+    border-color: var(--green-dimmer);
+  }
+  .menu-item.is-static:hover .handle,
+  .menu-item.is-static:hover .idx,
+  .menu-item.is-static:hover .key,
+  .menu-item.is-static:focus-visible .handle,
+  .menu-item.is-static:focus-visible .idx,
+  .menu-item.is-static:focus-visible .key{
+    color: var(--green-dim);
+  }
+
+  .idx{
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--green-dim);
+    width: 22px;
+    flex-shrink: 0;
+  }
+
+  .icon{
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .icon svg{
+    width: 20px;
+    height: 20px;
+    stroke: var(--green);
+    fill: none;
+    stroke-width: 1.5;
+    transition: stroke 100ms ease;
+  }
+
+  .label{
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .dots{
+    flex: 1;
+    border-bottom: 2px dotted var(--green-dimmer);
+    height: 1px;
+    margin: 0 4px;
+    align-self: center;
+    min-width: 16px;
+  }
+
+  .handle{
+    font-size: 13px;
+    color: var(--green-dim);
+    white-space: nowrap;
+  }
+
+  .key{
+    font-size: 11px;
+    color: var(--green-dim);
+    border: 1px solid var(--green-dimmer);
+    padding: 2px 6px;
+    white-space: nowrap;
+    display: none;
+  }
+  @media (min-width: 480px){
+    .key{ display: inline-block; }
+  }
+
+  /* ---- Footer status bar ---- */
+  .statusbar{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    font-size: 11.5px;
+    color: var(--green-dim);
+    padding: 10px 4px 0;
+    border-top: 1px solid var(--green-dimmer);
+    margin-top: 6px;
+  }
+  .statusbar .amber{
+    color: var(--amber);
+  }
+
+  @media (max-width: 460px){
+    .label{ font-size: 12.5px; }
+    .handle{ display:none; }
+    .menu-item{ padding: 11px 14px; }
+    .panel-body{ padding: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<main class="terminal">
+  <pre class="boot-log" id="bootLog" aria-hidden="true"></pre>
+
+  <div class="content" id="content">
+    <header class="banner">
+      <p class="path-line">C:\USERS\VITO&gt;</p>
+      <h1 class="ascii-title">VITO</h1>
+      <p class="subtitle">personal link directory — v1.0</p>
+    </header>
+
+    <section class="panel">
+      <div class="panel-bar"><h2>USER PROFILE</h2></div>
+      <div class="panel-body">
+        <p class="bio">
+          Trans dude at the mercy of two chaos agents (dog thinks I owe rent, cat knows my search history).
+          AuDHD, so response times vary between 4 seconds and next month.
+          Leftist, softhearted, bake cookies as peace offerings, lift often enough to carry my own baggage.
+          DMs open for recipes, hot takes, or book recs. Surprise me.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-bar">
+        <h2>SELECT DESTINATION</h2>
+        <span class="blink" aria-hidden="true">_</span>
+      </div>
+      <ul class="menu">
+
+        <li>
+          <a class="menu-item" href="https://instagram.com/hey_vito_hey" target="_blank" rel="noopener">
+            <span class="idx">01</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"></circle></svg></span>
+            <span class="label">INSTAGRAM</span>
+            <span class="dots"></span>
+            <span class="handle">@hey_vito_hey</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://twitter.com/vito_selfmade" target="_blank" rel="noopener">
+            <span class="idx">02</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></span>
+            <span class="label">TWITTER</span>
+            <span class="dots"></span>
+            <span class="handle">@vito_selfmade</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://threads.net/@hey_vito_hey" target="_blank" rel="noopener">
+            <span class="idx">03</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9.5" cy="9.5" r="5"></circle><circle cx="14.5" cy="14.5" r="5"></circle></svg></span>
+            <span class="label">THREADS</span>
+            <span class="dots"></span>
+            <span class="handle">@hey_vito_hey</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://thestorygraph.com/profile/heyvito" target="_blank" rel="noopener">
+            <span class="idx">04</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5c-2-1.4-4.6-2-7-1.6v13.6c2.4-0.4 5 0.2 7 1.6"></path><path d="M12 5c2-1.4 4.6-2 7-1.6v13.6c-2.4-0.4-5 0.2-7 1.6"></path><line x1="12" y1="5" x2="12" y2="18.6"></line></svg></span>
+            <span class="label">STORYGRAPH</span>
+            <span class="dots"></span>
+            <span class="handle">heyvito</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://pagebound.co/vitoreads" target="_blank" rel="noopener">
+            <span class="idx">05</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v3h3"></path><path d="M9 12h6"></path><path d="M9 16h6"></path></svg></span>
+            <span class="label">PAGEBOUND</span>
+            <span class="dots"></span>
+            <span class="handle">vitoreads</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://tiktok.com/@hey_vito" target="_blank" rel="noopener">
+            <span class="idx">06</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="17" r="3"></circle><line x1="12" y1="4" x2="12" y2="17"></line><path d="M12 4c0.4 2.4 2.2 4 4.6 4.2"></path></svg></span>
+            <span class="label">TIKTOK</span>
+            <span class="dots"></span>
+            <span class="handle">@hey_vito</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <a class="menu-item" href="https://heycomrade.tumblr.com" target="_blank" rel="noopener">
+            <span class="idx">07</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 4v4H8.5v3H11v6c0 2 1.2 3 3.3 3 0.8 0 1.6-0.1 2.2-0.3v-3c-0.4 0.1-0.9 0.2-1.3 0.2-0.9 0-1.4-0.4-1.4-1.4v-4.5h2.6V8H13.8V4z"></path></svg></span>
+            <span class="label">TUMBLR</span>
+            <span class="dots"></span>
+            <span class="handle">heycomrade</span>
+            <span class="key">ENTER</span>
+          </a>
+        </li>
+
+        <li>
+          <div class="menu-item is-static">
+            <span class="idx">08</span>
+            <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 8c3.5-1.6 8.5-1.6 12 0"></path><path d="M6 8c-1 3-1.4 6-1 9 1.8 1 3.4 1.4 5 1.6l0.8-1.6"></path><path d="M18 8c1 3 1.4 6 1 9-1.8 1-3.4 1.4-5 1.6l-0.8-1.6"></path><ellipse cx="9.5" cy="13" rx="1.3" ry="1.6"></ellipse><ellipse cx="14.5" cy="13" rx="1.3" ry="1.6"></ellipse></svg></span>
+            <span class="label">DISCORD</span>
+            <span class="dots"></span>
+            <span class="handle">hey_vito</span>
+            <span class="key">TEXT ONLY</span>
+          </div>
+        </li>
+
+      </ul>
+    </section>
+
+    <footer class="statusbar">
+      <span>MEM: 640K OK</span>
+      <span class="amber">STATUS: ONLINE</span>
+      <span>&copy; 2026 VITO.SYS</span>
+    </footer>
+  </div>
+</main>
+
+<script>
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var bootEl = document.getElementById('bootLog');
+    var content = document.getElementById('content');
+
+    var lines = [
+      'VITO.SYS v1.0 — LINK DIRECTORY',
+      'INITIALIZING...',
+      'LOADING PROFILE......... OK',
+      'MOUNTING SOCIAL DRIVES... OK'
+    ];
+
+    if (reduce) {
+      bootEl.style.display = 'none';
+      content.classList.add('is-visible');
+      return;
+    }
+
+    var lineIndex = 0, charIndex = 0, output = '';
+
+    function typeNext(){
+      if (lineIndex >= lines.length){
+        bootEl.innerHTML = output + '<span class="cursor"></span>';
+        setTimeout(function(){
+          content.classList.add('is-visible');
+          bootEl.style.display = 'none';
+        }, 260);
+        return;
+      }
+      var line = lines[lineIndex];
+      if (charIndex <= line.length){
+        output = lines.slice(0, lineIndex).join('\n') + (lineIndex > 0 ? '\n' : '') + line.slice(0, charIndex);
+        bootEl.innerHTML = output + '<span class="cursor"></span>';
+        charIndex++;
+        setTimeout(typeNext, 12);
+      } else {
+        lineIndex++;
+        charIndex = 0;
+        setTimeout(typeNext, 90);
+      }
+    }
+    typeNext();
+  })();
+</script>
+
+</body>
+</html>
